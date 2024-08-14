@@ -3,8 +3,6 @@ import java.awt.Graphics;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.Point;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionListener;
 
 
 public class Main extends JFrame{
@@ -13,35 +11,31 @@ public class Main extends JFrame{
       window.run();
     }
 
-    class Canvas extends JPanel implements MouseMotionListener {
+    class Canvas extends JPanel {
       Grid grid = new Grid();
       mousetrail trail = new mousetrail();
-  
+      Point lastposition =null;
+
+
+
       public Canvas() {
-          setPreferredSize(new Dimension(720, 720));
-          addMouseMotionListener(this);
+        setPreferredSize(new Dimension(720, 720));
       }
   
       @Override
-      public void paint(Graphics g) {
-          super.paint(g);
-          grid.paint(g, getMousePosition());
-          trail.paint(g);
-      }
-
-      @Override
-      public void mouseMoved(MouseEvent e) {
-          trail.add_position(e.getPoint());
-          repaint();
-      }
-
-      @Override
-      public void mouseDragged(MouseEvent e) {
-          trail.add_position(e.getPoint());
-          repaint();
-      }
+        public void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            Point currentposition = getMousePosition();
+          if (currentposition != null) {
+            if (lastposition == null || ! lastposition.equals(currentposition)) {
+                trail.add_position(currentposition);
+                   lastposition = currentposition;
+     }
+    }
+       grid.paint(g, currentposition);
+            trail.paint(g);
   }
-
+    }
     private Main() {
       this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
       Canvas canvas = new Canvas();
@@ -55,4 +49,5 @@ public class Main extends JFrame{
         repaint();
       }
     }
+
 }

@@ -5,7 +5,7 @@ import javax.swing.JPanel;
 import java.awt.Point;
 
 
-public class Main extends JFrame{
+public class Main extends JFrame {
     public static void main(String[] args) throws Exception {
       Main window = new Main();
       window.run();
@@ -14,12 +14,9 @@ public class Main extends JFrame{
     class Canvas extends JPanel {
       Grid grid = new Grid();
       mousetrail trail = new mousetrail();
-      Point lastposition =null;
-
-
-
+      Point lastposition = null;
       public Canvas() {
-        setPreferredSize(new Dimension(720, 720));
+          setPreferredSize(new Dimension(720, 720));
       }
   
       @Override
@@ -27,15 +24,16 @@ public class Main extends JFrame{
             super.paintComponent(g);
             Point currentposition = getMousePosition();
           if (currentposition != null) {
-            if (lastposition == null || ! lastposition.equals(currentposition)) {
+            if (lastposition == null || lastposition.equals(currentposition)) {
+            } else {
                 trail.add_position(currentposition);
-                   lastposition = currentposition;
-     }
-    }
-       grid.paint(g, currentposition);
-            trail.paint(g);
+                lastposition = currentposition;
+              }
+            }  
+          grid.paint(g, currentposition);
+          trail.paint(g); 
+      }
   }
-    }
     private Main() {
       this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
       Canvas canvas = new Canvas();
@@ -49,5 +47,4 @@ public class Main extends JFrame{
         repaint();
       }
     }
-
 }

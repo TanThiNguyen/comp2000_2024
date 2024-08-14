@@ -24,16 +24,17 @@ public class Main extends JFrame {
             super.paintComponent(g);
             Point currentposition = getMousePosition();
           if (currentposition != null) {
-            if (lastposition == null || lastposition.equals(currentposition)) {
-            } else {
+            if (lastposition == null || !lastposition.equals(currentposition)) {
                 trail.add_position(currentposition);
-                lastposition = currentposition;
-              }
-            }  
+                   lastposition = currentposition;
+     }
+          }
+
           grid.paint(g, currentposition);
           trail.paint(g); 
       }
   }
+
     private Main() {
       this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
       Canvas canvas = new Canvas();

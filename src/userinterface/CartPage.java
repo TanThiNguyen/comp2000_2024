@@ -18,7 +18,7 @@ public class CartPage extends Page {
     public static final String ROUTE_NAME = "cart-page";
 
     private Cart cart;
-    private Optional<Runnable> purchaseFn = Optional.empty();  // Changed to Optional
+    private Optional<Runnable> purchaseFn = Optional.empty();  
 
     public CartPage(UIService uiservice, Account account, Cart cart) {
         super(uiservice, account, ROUTE_NAME);

@@ -27,9 +27,16 @@ public class ProductPage extends Page {
     }
 
     @Override
+    // Clear the display if the data is invalid.
     public void accept(ItemInterface data) {
-        display = data;
+        if (data == null) {
+            System.err.println("Received null ItemInterface data.");
+            display = null;  
+        } else {
+            display = data;
+        }
     }
+    
 
     @Override
     protected void init() {}
@@ -53,15 +60,23 @@ public class ProductPage extends Page {
     }
 
     @Override
+    
     protected JPanel getBottom() {
         JPanel panel = new JPanel();
 
-        JButton buy = new JButton();
-        buy.setText("Add to cart");
-        buy.addActionListener(e -> addFn.accept(display));
-
+        JButton buy = new JButton("Add to cart");
+            // Disable button if display is null
+        try {
+            if (display != null) {
+                buy.addActionListener(e -> addFn.accept(display));
+            } else {
+                buy.setEnabled(false);  
+            }
+        } catch (Exception e) {
+            System.err.println("Error: " + e.getMessage());
+        }
         panel.add(buy);
         return panel;
     }
-    
 }
+

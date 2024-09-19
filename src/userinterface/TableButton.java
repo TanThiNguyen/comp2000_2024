@@ -15,15 +15,26 @@ public class TableButton extends DefaultCellEditor {
         super(new JCheckBox());
         button = new JButton();
         button.setOpaque(true);
-        button.addActionListener(e -> fireEditingStopped());
+        button.addActionListener(e -> {
+            try {
+                fireEditingStopped(); // Can throw exceptions during editing
+            } catch (Exception ex) {
+                System.err.println("Error occurred while editing table cell: " + ex.getMessage());
+            }
+        });
         this.text = text;
     }
 
     @Override
+    // Set text safely
     public Component getTableCellEditorComponent(
         JTable table, Object value, boolean isSelected, int row, int column
     ) {
-        button.setText(text);
+        try {
+            button.setText(text);  
+        } catch (Exception ex) {
+            System.err.println("Error occurred while setting button text: " + ex.getMessage());
+        }
         return button;
     }
 }

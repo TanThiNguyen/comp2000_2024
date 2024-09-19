@@ -83,9 +83,16 @@ public class Table extends JTable {
                 public void valueChanged(ListSelectionEvent e) {
                     if (e.getValueIsAdjusting()) return;
                     int selectedRow = getSelectedRow();
+                    
+
                     boolean buttonColumn = getSelectedColumn() == COLUMNS.length - 1;
                     if (selectedRow >= 0 && selectedRow < DATA.length && buttonColumn) {
+                        try{
                         fn.accept(rows.get(selectedRow));
+                        }
+                        catch(Exception ex){
+                            System.out.println("there is error");
+                        }
                     }
                 }
             };

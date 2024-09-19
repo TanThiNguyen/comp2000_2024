@@ -47,6 +47,7 @@ public class StockPage extends Page {
 
         @SuppressWarnings("rawtypes")
         JScrollPane scrollPane = new JScrollPane(new Table(columns, stockRows, r -> {
+            try{
             Object dataPath = r.column(r.numColumns() - 1);
             if (dataPath instanceof String) {
                 detailsFn.accept((String) dataPath);
@@ -54,6 +55,13 @@ public class StockPage extends Page {
             if (dataPath instanceof Optional && ((Optional) dataPath).get() instanceof String) {
                 detailsFn.accept((String) ((Optional) dataPath).get());
             }
+            else {
+                System.err.println("Invalid or empty Optional value for File Path");
+            }
+        }
+        catch(Exception e){
+            System.err.println("Error processing file path");
+        }
         }));
         panel.add(scrollPane, BorderLayout.CENTER);
 

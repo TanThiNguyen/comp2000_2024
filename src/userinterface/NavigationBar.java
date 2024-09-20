@@ -11,29 +11,15 @@ public class NavigationBar extends JPanel {
         Box centreBox = Box.createHorizontalBox();
         if (showBack) {
             JButton back = new JButton("< Back");
-            back.addActionListener((unused) -> {
-                // Handle possible failures in the back navigation.
-                try {
-                    service.back();
-                } catch (Exception e) {
-                    System.err.println("Failed to navigate back: " + e.getMessage());
-                }
-            });
+            back.addActionListener((unused) -> service.back());
             centreBox.add(back);
         }
+
         JButton store = new JButton("Store");
-        store.addActionListener((unused) -> {
-            if (!service.navigateTo(StockPage.ROUTE_NAME)) {
-                System.err.println("Failed to navigate to the store.");
-            }
-        });
+        store.addActionListener((unused) -> service.navigateTo(StockPage.ROUTE_NAME));
     
         JButton cart = new JButton("Cart");
-        cart.addActionListener((unused) -> {
-            if (!service.navigateTo(CartPage.ROUTE_NAME)) {
-                System.err.println("Failed to navigate to the cart.");
-            }
-        });
+        cart.addActionListener((unused) -> service.navigateTo(CartPage.ROUTE_NAME));
 
         centreBox.add(store);
         centreBox.add(cart);

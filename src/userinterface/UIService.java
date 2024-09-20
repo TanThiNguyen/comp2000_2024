@@ -9,8 +9,6 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.util.Stack;
 
-import java.util.Optional;
-
 public class UIService {
     
     private CardLayout layout;
@@ -32,123 +30,59 @@ public class UIService {
         panel.add(page, page.routeName);
     }
 
-    // Page getActivePage() {
-    //     Page page = null;
-    //     for (Component c : panel.getComponents()) {
-    //         if (c.isVisible()) {
-    //             page = (Page) c;
-    //         }
-    //     }
-    //     return page;
-    // }
-
-    public Optional<Page> getActivePage() {
+    Page getActivePage() {
+        Page page = null;
         for (Component c : panel.getComponents()) {
             if (c.isVisible()) {
-                return Optional.of((Page) c);
+                page = (Page) c;
             }
         }
-        return Optional.empty();
+        return page;
     }
 
-    // String lastPageRoute() {
-    //     if (history.size() <= 1) {
-    //         return "";
-    //     }
-    //     String current = history.pop();
-    //     String last = history.peek();
-    //     history.push(current);
-    //     return last;
-    // }
-    public Optional<String> lastPageRoute() {
+    String lastPageRoute() {
         if (history.size() <= 1) {
-            return Optional.empty();
+            return "";
         }
         String current = history.pop();
         String last = history.peek();
         history.push(current);
-        return Optional.of(last);
+        return last;
     }
 
-    // void refresh() {
-    //     String current = history.peek();
-    //     if (history.size() > 1) {
-    //         back();
-    //     }
-    //     navigateTo(current);
-    // }
-
-    public void refresh() {
-        Optional<String> current = Optional.ofNullable(history.peek());
+    void refresh() {
+        String current = history.peek();
         if (history.size() > 1) {
             back();
         }
-        current.ifPresent(this::navigateTo);
+        navigateTo(current);
     }
 
-    // public void navigateTo(String route) {
-    //     if (history.size() > 0 && history.peek().equals(route)) {
-    //         return;
-    //     }
-    //     history.push(route);
-    //     layout.show(panel, route);
-    //     getActivePage().buildPage();
-    //     getActivePage().validate();
-    // }
-    public boolean navigateTo(String route) {
+    public void navigateTo(String route) {
         if (history.size() > 0 && history.peek().equals(route)) {
-            return false;  // Indicating no navigation occurred
+            return;
         }
         history.push(route);
         layout.show(panel, route);
-        Optional<Page> activePage = getActivePage();
-        if (activePage.isPresent()) {
-            activePage.get().buildPage();
-            activePage.get().validate();
-            return true;  // Navigation was successful
-        } else {
-            System.err.println("Failed to navigate: Active page not found.");
-            return false;  // Navigation failed
-        }
+        getActivePage().buildPage();
+        getActivePage().validate();
     }
 
-    
-    // public void navigateTo(String route, ItemInterface data) {
-    //     if (history.size() > 0 && history.peek().equals(route)) {
-    //         return;
-    //     }
-    //     history.push(route);
-    //     layout.show(panel, route);
-    //     getActivePage().accept(data);
-    //     getActivePage().buildPage();
-    //     getActivePage().validate();
-    // }
- 
-    public boolean navigateTo(String route, ItemInterface data) {
+    public void navigateTo(String route, ItemInterface data) {
         if (history.size() > 0 && history.peek().equals(route)) {
-            return false;  // Indicating no navigation occurred
+            return;
         }
         history.push(route);
         layout.show(panel, route);
-        Optional<Page> activePage = getActivePage();
-        if (activePage.isPresent()) {
-            activePage.get().accept(data);
-            activePage.get().buildPage();
-            activePage.get().validate();
-            return true;  // Navigation was successful
-        } else {
-            System.err.println("Failed to navigate: Active page not found.");
-            return false;  // Navigation failed
-        }
+        getActivePage().accept(data);
+        getActivePage().buildPage();
+        getActivePage().validate();
     }
 
-    // void back() {
-    //     String last = lastPageRoute();
-    //     if (!last.isEmpty()) {
-    //         navigateTo(last);
-    //     }
-    // }
-    public void back() {
-        lastPageRoute().ifPresent(this::navigateTo);
+    void back() {
+        String last = lastPageRoute();
+        if (!last.isEmpty()) {
+            navigateTo(last);
+        }
     }
 }

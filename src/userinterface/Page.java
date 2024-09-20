@@ -27,18 +27,13 @@ public abstract class Page extends JPanel {
     public abstract void accept(ItemInterface data);
 
     protected abstract void init();
-    
+
     public void buildPage() {
-        try {
-            removeAll();
-            setLayout(new BorderLayout());
-            add(getTop(), BorderLayout.PAGE_START);
-            add(getCentre(), BorderLayout.CENTER);
-            add(getBottom(), BorderLayout.SOUTH);
-        } catch (Exception e) {
-            System.err.println("Failed to build page: " + e.getMessage());
-            e.printStackTrace();
-        }
+        removeAll();
+        setLayout(new BorderLayout());
+        add(getTop(), BorderLayout.PAGE_START);
+        add(getCentre(), BorderLayout.CENTER);
+        add(getBottom(), BorderLayout.SOUTH);
     }
 
     protected JPanel getTop() {

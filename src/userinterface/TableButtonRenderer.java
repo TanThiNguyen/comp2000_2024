@@ -19,12 +19,7 @@ public class TableButtonRenderer extends JButton implements TableCellRenderer {
     public Component getTableCellRendererComponent(
             JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column
     ) {
-        try {
-            setText(text);
-        } catch (Exception e) {
-            System.err.println("Error rendering table button at row " + row + ", column " + column + " ");
-            setText("Error");
-        }
+        setText(text);
         return this;
     }
     

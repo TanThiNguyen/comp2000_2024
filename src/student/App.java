@@ -68,11 +68,7 @@ public class App {
 
     void setupPurchaseAction(CartPage page, StockPage pageToUpdate) {
         page.setPurchaseFn(() -> {
-            if (cart.buy(account, bookStock)) {
-                List<TableRowModel> rows = combinedRows(bookStock.toTableRows(), otherStock.toTableRows());
-                pageToUpdate.updateStockRows(rows);
-            }
-            if (cart.buy(account, otherStock)) {
+            if (cart.buy(account, bookStock) || cart.buy(account, otherStock)) {
                 cart.clear();
                 List<TableRowModel> rows = combinedRows(bookStock.toTableRows(), otherStock.toTableRows());
                 pageToUpdate.updateStockRows(rows);

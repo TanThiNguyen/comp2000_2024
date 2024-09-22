@@ -22,12 +22,20 @@ public class OtherStock {
 
     public int getQuantityOf(String name) {
         int index = indexOf(name);
-        return quantities.get(index);
+        return index >= 0 ? quantities.get(index) : 0;
     }
 
     public void setQuantity(String name, int quantity) {
         int index = indexOf(name);
         quantities.set(index, quantity);
+    }
+// add get
+    public double getPrice(String name) {
+        int index = indexOf(name);
+        if (index >= 0) {
+            return stock.get(index).getPrice(); 
+        }
+        return 0; 
     }
 
     private int indexOf(String name) {

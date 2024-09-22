@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class Cart {
-    private List<ItemInterface> items;       // Single list for both books and products
+    private List<Items> items;       // Single list for both books and products
     private List<Integer> itemQuantities;    // Corresponding list for quantities
 
     public Cart() {
@@ -17,7 +17,7 @@ public class Cart {
         itemQuantities.clear();
     }
 
-    public void add(ItemInterface item) {
+    public void add(Items item) {
         int itemIndex = items.indexOf(item);
         if (itemIndex < 0) {
             items.add(item);

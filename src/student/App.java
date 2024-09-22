@@ -63,7 +63,7 @@ public class App {
     }
 
     void setupAddToCartAction(ProductPage page) {
-        page.setAddToCartAction(product -> cart.add(product));
+        page.setAddToCartAction(product -> cart.add((Items) product));
     }
 
     void setupPurchaseAction(CartPage page, StockPage pageToUpdate) {

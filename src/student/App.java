@@ -72,7 +72,7 @@ public class App {
                 List<TableRowModel> rows = combinedRows(bookStock.toTableRows(), otherStock.toTableRows());
                 pageToUpdate.updateStockRows(rows);
             }
-            if (cart.buy(account, otherStock)) {
+            if (cart.buy(account, bookStock)) {
                 cart.clear();
                 List<TableRowModel> rows = combinedRows(bookStock.toTableRows(), otherStock.toTableRows());
                 pageToUpdate.updateStockRows(rows);

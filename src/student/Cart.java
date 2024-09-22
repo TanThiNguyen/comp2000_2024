@@ -4,134 +4,71 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class Cart {
-    public List<Book> books;
-    public List<Integer> bookQuantities;
-    public List<Product> products;
-    public List<Integer> productQuantities;
+    private List<ItemInterface> items;       // Single list for both books and products
+    private List<Integer> itemQuantities;    // Corresponding list for quantities
 
     public Cart() {
-        books = new ArrayList<>();
-        bookQuantities = new ArrayList<>();
-        products = new ArrayList<>();
-        productQuantities = new ArrayList<>();
+        items = new ArrayList<>();
+        itemQuantities = new ArrayList<>();
     }
 
     public void clear() {
-        books.clear();
-        bookQuantities.clear();
-        products.clear();
-        productQuantities.clear();
+        items.clear();
+        itemQuantities.clear();
     }
 
     public void add(ItemInterface item) {
-        if (item instanceof Book) {
-            add((Book) item);
-        }
-        if (item instanceof Product) {
-            add((Product) item);
-        }
-    }
-
-    public void add(Book book) {
-        int bookIndex = books.indexOf(book);
-        if (bookIndex < 0) {
-            books.add(book);
-            bookQuantities.add(1);
+        int itemIndex = items.indexOf(item);
+        if (itemIndex < 0) {
+            items.add(item);
+            itemQuantities.add(1);
         } else {
-            bookQuantities.set(bookIndex, bookQuantities.get(bookIndex) + 1);
-        }
-    }
-
-    public void add(Product product) {
-        int productIndex = products.indexOf(product);
-        if (productIndex < 0) {
-            products.add(product);
-            productQuantities.add(1);
-        } else {
-            productQuantities.set(productIndex, productQuantities.get(productIndex) + 1);
+            itemQuantities.set(itemIndex, itemQuantities.get(itemIndex) + 1);
         }
     }
 
     public boolean buy(Account user, BookStock from) {
         double totalCost = 0;
 
-        for (int i = 0; i < books.size(); i++) {
-            Book orderBook = books.get(i);
-            Integer orderQuantity = bookQuantities.get(i);
-            totalCost += orderBook.getPrice() * orderQuantity;
-            
-            int stockQuantity = from.getQuantityOf(orderBook.getName());
+        // Calculate total cost and check stock availability
+        for (int i = 0; i < items.size(); i++) {
+            ItemInterface item = items.get(i);
+            Integer orderQuantity = itemQuantities.get(i);
+            totalCost += item.getPrice() * orderQuantity;
 
+            int stockQuantity = from.getQuantityOf(item.getName());
             if (stockQuantity == 0 || stockQuantity < orderQuantity) {
-                System.err.println("There is not enough " + orderBook.getName() + " in stock for purchase");
+                System.err.println("There is not enough " + item.getName() + " in stock for purchase");
                 return false;
             }
         }
+
         if (totalCost > user.credit) {
             System.err.println("User does not have enough credit for purchase");
             return false;
         }
+
+        // Deduct total cost from user's credit
         user.credit -= totalCost;
 
-        // Remove from stock
-        for (int i = 0; i < books.size(); i++) {
-            Book orderBook = books.get(i);
-            Integer orderQuantity = bookQuantities.get(i);
-
-            int newQuantity = from.getQuantityOf(orderBook.getName()) - orderQuantity;
-
-            from.setQuantity(orderBook.getName(), newQuantity);
-        }
-
-        return true;
-    }
-
-    public boolean buy(Account user, OtherStock from) {
-        double totalCost = 0;
-
-        for (int i = 0; i < products.size(); i++) {
-            Product orderProduct = products.get(i);
-            Integer orderQuantity = productQuantities.get(i);
-            totalCost += orderProduct.getPrice() * orderQuantity;
-            
-            int stockQuantity = from.getQuantityOf(orderProduct.getName());
-
-            if (stockQuantity == 0 || stockQuantity < orderQuantity) {
-                System.err.println("There is not enough " + orderProduct.getName() + " in stock for purchase");
-                return false;
-            }
-        }
-        if (totalCost > user.credit) {
-            System.err.println("User does not have enough credit for purchase");
-            return false;
-        }
-        user.credit -= totalCost;
-
-        // Remove from stock
-        for (int i = 0; i < products.size(); i++) {
-            Product orderProduct = products.get(i);
-            Integer orderQuantity = productQuantities.get(i);
-
-            int newQuantity = from.getQuantityOf(orderProduct.getName()) - orderQuantity;
-
-            from.setQuantity(orderProduct.getName(), newQuantity);
+        // Update stock quantities after purchase
+        for (int i = 0; i < items.size(); i++) {
+            ItemInterface item = items.get(i);
+            Integer orderQuantity = itemQuantities.get(i);
+            int newQuantity = from.getQuantityOf(item.getName()) - orderQuantity;
+            from.setQuantity(item.getName(), newQuantity);
         }
 
         return true;
     }
 
     public List<TableRowModel> toTableRows() {
-        List<TableRowModel> result = new ArrayList<>(books.size() + products.size());
+        List<TableRowModel> result = new ArrayList<>(items.size());
 
-        for (int i = 0; i < books.size(); i++) {
-            Book book = books.get(i);
-            Integer quantity = bookQuantities.get(i);
-            result.add(new TableRowModel(book.getName(), book.getPrice() + "", quantity + ""));
-        }
-        for (int i = 0; i < products.size(); i++) {
-            Product product = products.get(i);
-            Integer quantity = productQuantities.get(i);
-            result.add(new TableRowModel(product.getName(), product.getPrice() + "", quantity + ""));
+        for (int i = 0; i < items.size(); i++) {
+            ItemInterface item = items.get(i);
+            Integer quantity = itemQuantities.get(i);
+            result.add(new TableRowModel(item.getName(), item.getPrice() + "", quantity + ""));
         }
 
         return result;

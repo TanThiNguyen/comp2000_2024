@@ -9,6 +9,7 @@ import userinterface.CartPage;
 import userinterface.ProductPage;
 import userinterface.StockPage;
 import userinterface.UIService;
+
 public class App {
     public static final String DATA_DIR = "./data";
 
@@ -52,60 +53,29 @@ public class App {
 
     void setupDetailsButtonAction(StockPage page) {
         page.setDetailsButtonFn((data) -> {
-            try{
-            ItemInterface item = DataReader.read(data);
-            if (item != null) {
-                ui.navigateTo(ProductPage.ROUTE_NAME, item);
-            } 
-            else {
-                System.err.println("Error: Product not found or data is invalid.");
+            try {
+                ui.navigateTo(ProductPage.ROUTE_NAME, DataReader.read(data));
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.exit(1);
             }
-        }
-        catch(Exception e){
-            System.err.println("Error occurred while reading data: ");
-            e.printStackTrace();
-        }
         });
     }
 
     void setupAddToCartAction(ProductPage page) {
-        page.setAddToCartAction(product -> {
-            if (product != null) {  // Check if the product is valid
-                try {
-                    cart.add(product);  
-                    System.out.println("Product added to cart successfully.");  
-                } catch (Exception e) {
-                    System.err.println("Error while adding product to cart: " + e.getMessage());
-                    e.printStackTrace();  
-                }
-            } else {
-                System.err.println("Error: Product is null and cannot be added to cart.");
-            }
-        });
+        page.setAddToCartAction(product -> cart.add(product));
     }
 
     void setupPurchaseAction(CartPage page, StockPage pageToUpdate) {
         page.setPurchaseFn(() -> {
-            boolean bookPurchaseSuccess = false;
-            boolean otherPurchaseSuccess = false;
-            try {
-                bookPurchaseSuccess = cart.buy(account, bookStock);
-                otherPurchaseSuccess = cart.buy(account, otherStock);
-    
-                if (bookPurchaseSuccess || otherPurchaseSuccess) {
-                    cart.clear();
-                    List<TableRowModel> rows = combinedRows(
-                        bookStock.toTableRows(),
-                        otherStock.toTableRows()
-                    );
-                    pageToUpdate.updateStockRows(rows);
-                    System.out.println("Purchase successful.");
-                } else {
-                    System.err.println("Error: Purchase failed for both bookStock and otherStock.");
-                }
-            } catch (Exception e) {
-                System.err.println("Error occurred during purchase: " + e.getMessage());
-                e.printStackTrace();  
+            if (cart.buy(account, bookStock)) {
+                List<TableRowModel> rows = combinedRows(bookStock.toTableRows(), otherStock.toTableRows());
+                pageToUpdate.updateStockRows(rows);
+            }
+            if (cart.buy(account, otherStock)) {
+                cart.clear();
+                List<TableRowModel> rows = combinedRows(bookStock.toTableRows(), otherStock.toTableRows());
+                pageToUpdate.updateStockRows(rows);
             }
         });
     }
